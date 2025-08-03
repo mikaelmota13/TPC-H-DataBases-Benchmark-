@@ -81,4 +81,3 @@ make MACHINE=MACOS DATABASE=POSTGRESQL
 ## Referências
 
 - [TPC-H Benchmark](http://www.tpc.org/tpch)
-- Documentação oficial no arquivo [`tpch-kit/README.md`](tpch-kit/README.md)
