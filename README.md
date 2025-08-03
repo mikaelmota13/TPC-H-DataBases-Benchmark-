@@ -8,7 +8,7 @@ Benchmark TPC-H implementado:
 - Benchmark com medição de tempo
 ---
 
-## Estrutura do Projeto
+## Estrutura
 
 - `tpch-kit/`: Kit oficial TPC-H com geradores de dados e queries.
   - `dbgen/`: Contém `dbgen`, `qgen` e templates SQL.
@@ -16,6 +16,72 @@ Benchmark TPC-H implementado:
 - `tpch-schema.sql`: Criação das tabelas no banco PostgreSQL.
 - `run_tpch.py`: Executa todas as 22 queries medindo o tempo.
 
+## Componentes do TPC-H
+<img width="615" height="693" alt="sample-data-tpch-schema" src="https://github.com/user-attachments/assets/95e30211-2f48-41c2-9ed8-d2a1745b0188" />
+
+fonte: [TPC Benchmark H Standard Specification](https://www.tpc.org/tpc_documents_current_versions/pdf/tpc-h_v2.17.1.pdf)
+
+### O esquema TPC-H representa um modelo relacional com 8 tabelas:
+
+* **PART (P\_)** -
+  Descreve peças (parts):
+  - Chave primária: `PARTKEY`
+  - Colunas: `NAME`, `MFGR`, `BRAND`, `TYPE`, `SIZE`, `CONTAINER`, `RETAILPRICE`, `COMMENT`
+
+* **SUPPLIER (S\_)** -
+  Fornecedores de peças:
+  - Chave primária: `SUPPKEY`
+  - Colunas: `NAME`, `ADDRESS`, `NATIONKEY`, `PHONE`, `ACCTBAL`, `COMMENT`
+
+* **PARTSUPP (PS\_)** -
+  Tabela de relação N\:N entre PART e SUPPLIER:
+  - Chave composta: (`PARTKEY`, `SUPPKEY`)
+  - Colunas: `AVAILQTY`, `SUPPLYCOST`, `COMMENT`
+
+* **CUSTOMER (C\_)** -
+  Clientes:
+  - Chave primária: `CUSTKEY`
+  - Colunas: `NAME`, `ADDRESS`, `NATIONKEY`, `PHONE`, `ACCTBAL`, `MKTSEGMENT`, `COMMENT`
+
+* **ORDERS (O\_)** - 
+  Pedidos de clientes:
+  - Chave primária: `ORDERKEY`
+  - Chave estrangeira: `CUSTKEY` → CUSTOMER
+  - Colunas: `ORDERSTATUS`, `TOTALPRICE`, `ORDERDATE`, `ORDERPRIORITY`, `CLERK`, `SHIPPRIORITY`, `COMMENT`
+
+* **LINEITEM (L\_)** -
+  Itens de cada pedido:
+  - Chave composta: (`ORDERKEY`, `LINENUMBER`)
+  - Chaves estrangeiras: `ORDERKEY` → ORDERS, `PARTKEY` → PART, `SUPPKEY` → SUPPLIER
+  - Colunas: `QUANTITY`, `EXTENDEDPRICE`, `DISCOUNT`, `TAX`, `RETURNFLAG`, `LINESTATUS`, `SHIPDATE`, `COMMITDATE`, `RECEIPTDATE`, `SHIPINSTRUCT`, `SHIPMODE`, `COMMENT`
+
+* **NATION (N\_)** -
+  Países:
+  - Chave primária: `NATIONKEY`
+  - Chave estrangeira: `REGIONKEY` → REGION
+  - Colunas: `NAME`, `COMMENT`
+
+* **REGION (R\_)** -
+  Regiões:
+  - Chave primária: `REGIONKEY`
+  - Colunas: `NAME`, `COMMENT`
+
+### Relacionamentos:
+
+* 1\:N de:
+
+  * REGION → NATION
+  * NATION → CUSTOMER e SUPPLIER
+  * CUSTOMER → ORDERS
+  * ORDERS → LINEITEM
+  * PART e SUPPLIER → PARTSUPP
+  * PARTSUPP → LINEITEM
+
+### Obs:
+
+  * As setas indicam o lado "muitos" das relações 1\:N.
+  * O sufixo `SF` indica o scale factor, i.e., cardinalidade aproximada com base no tamanho da base.
+    Ex.: `LINEITEM` ≈ SF \* 6.000.000.
 ---
 
 ## Execução
@@ -79,4 +145,5 @@ make MACHINE=MACOS DATABASE=POSTGRESQL
 ## Referências
 
 - [TPC-H Benchmark](http://www.tpc.org/tpch)
+
 
