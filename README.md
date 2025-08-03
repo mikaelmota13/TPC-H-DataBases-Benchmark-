@@ -1,6 +1,6 @@
 # TPC-H Benchmark com PostgreSQL e Docker
 
-Este projeto configura e executa o benchmark TPC-H usando:
+Benchmark TPC-H implementado:
 
 - Geração de dados com `dbgen`
 - Banco PostgreSQL via Docker
@@ -14,9 +14,7 @@ Este projeto configura e executa o benchmark TPC-H usando:
   - `dbgen/`: Contém `dbgen`, `qgen` e templates SQL.
   - `queries_resolved/`: Queries TPC-H geradas com valores concretos.
 - `tpch-schema.sql`: Criação das tabelas no banco PostgreSQL.
-- `run_tpch.py`: Executa todas as 22 queries, medindo tempo, CPU e RAM.
-- `README.md`: Este arquivo com instruções completas.
-
+- `run_tpch.py`: Executa todas as 22 queries medindo o tempo.
 
 ---
 
@@ -81,3 +79,4 @@ make MACHINE=MACOS DATABASE=POSTGRESQL
 ## Referências
 
 - [TPC-H Benchmark](http://www.tpc.org/tpch)
+
