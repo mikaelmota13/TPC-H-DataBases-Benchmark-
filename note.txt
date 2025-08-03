@@ -1,1 +1,2 @@
+docker start tpch-postgres
 docker exec -it tpch-postgres psql -U postgres -d tpch
