@@ -1,0 +1,25 @@
+version: "3.9"                            # versão do schema do Compose
+
+services:                                  # serviços orquestrados
+  tpch-postgres:                           # nome lógico do serviço
+    image: postgres:15                     # imagem do Postgres (versão 15)
+    container_name: tpch-postgres          # nome do container
+    restart: unless-stopped                # reinicia se cair (exceto se parar manualmente)
+    environment:                           # variáveis de ambiente do entrypoint
+      POSTGRES_USER: postgres              # usuário inicial
+      POSTGRES_PASSWORD: postgres          # senha do usuário
+      POSTGRES_DB: tpch                    # banco criado na inicialização
+      TZ: America/Fortaleza                # fuso horário dentro do container
+    ports:
+      - "5432:5432"                        # host:container; troque p/ "5433:5432" se 5432 ocupada
+    volumes:
+      - tpch_pgdata:/var/lib/postgresql/data   # volume persistente de dados do PG
+      - ./init:/docker-entrypoint-initdb.d     # scripts .sql/.sh executados na 1ª inicialização
+    healthcheck:                            # verificação de saúde do serviço
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tpch -h 127.0.0.1 -p 5432"]  # ping ao PG
+      interval: 5s                          # frequência da checagem
+      timeout: 3s                           # tempo máximo por checagem
+      retries: 10                           # falhas antes de marcar como unhealthy
+
+volumes:
+  tpch_pgdata:                              # declaração do volume nomeado
